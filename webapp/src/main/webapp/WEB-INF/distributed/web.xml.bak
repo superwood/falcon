@@ -22,8 +22,8 @@
 
 <web-app>
 
-    <display-name>Apache Falcon Prism</display-name>
-    <description>Apache Falcon Prism</description>
+    <display-name>Apache Falcon Distributed Server</display-name>
+    <description>Apache Falcon Distributed Server</description>
 
     <filter>
         <filter-name>audit</filter-name>
@@ -45,9 +45,14 @@
         <filter-class>org.apache.falcon.security.FalconAuthorizationFilter</filter-class>
     </filter>
 
+    <filter>
+        <filter-name>client-cert-auth</filter-name>
+        <filter-class>org.apache.falcon.security.ClientCertificateFilter</filter-class>
+    </filter>
+
     <filter-mapping>
         <filter-name>audit</filter-name>
-        <servlet-name>FalconProxyAPI</servlet-name>
+        <servlet-name>FalconRESTApi</servlet-name>
     </filter-mapping>
 
     <filter-mapping>
@@ -57,12 +62,27 @@
 
     <filter-mapping>
         <filter-name>authentication</filter-name>
-        <servlet-name>FalconProxyAPI</servlet-name>
+        <servlet-name>FalconRESTApi</servlet-name>
     </filter-mapping>
 
     <filter-mapping>
         <filter-name>authorization</filter-name>
-        <servlet-name>FalconProxyAPI</servlet-name>
+        <servlet-name>FalconRESTApi</servlet-name>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>audit</filter-name>
+        <servlet-name>SecureApi</servlet-name>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>authentication</filter-name>
+        <servlet-name>SecureApi</servlet-name>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>client-cert-auth</filter-name>
+        <servlet-name>SecureApi</servlet-name>
     </filter-mapping>
 
     <listener>
@@ -70,24 +90,45 @@
     </listener>
 
     <servlet>
-        <servlet-name>FalconProxyAPI</servlet-name>
+        <servlet-name>FalconRESTApi</servlet-name>
         <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
         <init-param>
             <param-name>com.sun.jersey.config.property.resourceConfigClass</param-name>
-            <param-value>com.sun.jersey.api.core.PackagesResourceConfig</param-value>
+            <param-value>com.sun.jersey.api.core.ClassNamesResourceConfig</param-value>
         </init-param>
         <init-param>
-            <param-name>com.sun.jersey.config.property.packages</param-name>
+            <param-name>com.sun.jersey.config.property.classnames</param-name>
             <param-value>
-                org.apache.falcon.resource.admin,org.apache.falcon.resource.provider,org.apache.falcon.resource.proxy,org.apache.falcon.resource.metadata
+                org.apache.falcon.resource.admin.AdminResource,org.apache.falcon.resource.provider.JAXBContextResolver,org.apache.falcon.resource.SchedulableEntityManager,org.apache.falcon.resource.InstanceManager,org.apache.falcon.resource.metadata.MetadataDiscoveryResource,org.apache.falcon.resource.metadata.LineageMetadataResource
+            </param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet>
+        <servlet-name>SecureApi</servlet-name>
+        <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
+        <init-param>
+            <param-name>com.sun.jersey.config.property.resourceConfigClass</param-name>
+            <param-value>com.sun.jersey.api.core.ClassNamesResourceConfig</param-value>
+        </init-param>
+        <init-param>
+            <param-name>com.sun.jersey.config.property.classnames</param-name>
+            <param-value>
+                org.apache.falcon.resource.provider.JAXBContextResolver,org.apache.falcon.resource.ConfigSyncService
             </param-value>
         </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
 
     <servlet-mapping>
-        <servlet-name>FalconProxyAPI</servlet-name>
+        <servlet-name>FalconRESTApi</servlet-name>
         <url-pattern>/api/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>SecureApi</servlet-name>
+        <url-pattern>/secure/*</url-pattern>
     </servlet-mapping>
 
 </web-app>

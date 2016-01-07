@@ -132,7 +132,7 @@
         </repository>
         <repository>
             <id>Codehaus repository</id>
-            <url>http://repository.codehaus.org/</url>
+            <url>http://codehaus.org/</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>

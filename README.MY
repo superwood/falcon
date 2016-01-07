@@ -1,0 +1,11 @@
+falcon两种编译模式
+
+1. distribute模式
+	falcon-server:
+	服务：在此模式下，编译出来的falcon-server中的jetty初始化配置文件"$basedir/server/webapp//falcon/WEB-INF/web.xml"是有问题，使用这个web.xml初始化的jetty服务不能接受submit等请求。
+	该wen.xml是由falcon.war解压出来，同时也是原来工程中的wabapp模块下编译出来。 要解决这个问题，可以使用prism模块中的 prism/src/main/webapp/WEB-INF/web.xml即可。
+	页面: 使用的是falcon-ui下的资源
+
+	falcon-prism:
+	服务：可以接受用户的作业提交等操作
+	页面：在此模式下falcon-prism的web没有任何提交作业的页面和按钮，只能查看cluster,datasets,process。因为prism中打包的web资源使用的是html5-ui资源页面

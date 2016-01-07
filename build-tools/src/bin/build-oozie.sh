@@ -52,6 +52,7 @@ rm oozie-$VERSION.tgz
 cd $PKG
 
 sed -i.bak s/$VERSION\<\\/version\>/$BUILD_VERSION\<\\/version\>/g pom.xml */pom.xml */*/pom.xml
+sed -i ""  "s/repository.codehaus/www.codehaus/g"  pom.xml   */pom.xml */*/pom.xml
 patch -p0 < ../../build-tools/src/patches/oozie-site.patch
 
 case $VERSION in

@@ -50,7 +50,7 @@ HADOOP_PROFILE="hadoop-""$(echo ${HADOOP_VERSION} | cut -d'.' -f 1)"
 
 pushd ${FALCON_SRC}
 echo "Builing oozie-el-extension and oozie"
-mvn clean install -P $HADOOP_PROFILE -pl build-tools,hadoop-dependencies,oozie-el-extensions -am -Dhadoop.version=$HADOOP_VERSION -Doozie.version=$OOZIE_VERSION -Doozie.forcebuild=true -DskipTests
+mvn clean install -X -P $HADOOP_PROFILE -pl build-tools,hadoop-dependencies,oozie-el-extensions -am -Dhadoop.version=$HADOOP_VERSION -Doozie.version=$OOZIE_VERSION -Doozie.forcebuild=true -DskipTests -Dmaven.test.skip=true
 pushd target/oozie-$OOZIE_VERSION
 bin/mkdistro.sh -DjavaVersion=1.7 -DtargetJavaVersion=1.6 -DskipTests
 pushd distro/target/oozie-*
@@ -63,7 +63,7 @@ tar -zcvf ${FALCON_SRC}/target/oozie-$OOZIE_VERSION-distro.tar.gz oozie-*
 
 popd
 popd
-mvn assembly:assembly -P $HADOOP_PROFILE -Dhadoop.version=$HADOOP_VERSION -Doozie.version=$OOZIE_VERSION -Doozie.forcebuild=true -DskipTests -DskipCheck=true
+mvn assembly:assembly -P $HADOOP_PROFILE -Dhadoop.version=$HADOOP_VERSION -Doozie.version=$OOZIE_VERSION -Doozie.forcebuild=true -DskipTests -Dmaven.test.skip=true -DskipCheck=true
 
 echo "Falcon pacakge is available in ${FALCON_SRC}/target/falcon-<<version>>-bin.tar.gz"
 echo "Oozie pacakge is available in ${FALCON_SRC}/target/oozie-$OOZIE_VERSION/distro/target/oozie-$OOZIE_VERSION-distro.tar.gz"
